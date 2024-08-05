@@ -58,13 +58,13 @@ def generate_launch_description():
     ),
     RegisterEventHandler(
       OnExecutionComplete(
-        target_action=[joint_state_broadcaster_spawner],
+        target_action=joint_state_broadcaster_spawner,
         on_completion=[elastoplastic_controller_spawner],
       )
     ),
     RegisterEventHandler(
       OnExecutionComplete(
-        target_action=[elastoplastic_controller_spawner],
+        target_action=elastoplastic_controller_spawner,
         on_completion=[joint_trajectory_controller_spawner],
       )
     ),
