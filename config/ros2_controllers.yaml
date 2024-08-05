@@ -11,6 +11,23 @@ controller_manager:
     elastoplastic_controller:
       type: elastoplastic_controller/ElastoplasticController
 
+    robotiq_force_torque_sensor_broadcaster:
+      type: force_torque_sensor_broadcaster/ForceTorqueSensorBroadcaster
+
+
+robotiq_force_torque_sensor_broadcaster:
+  ros__parameters:
+    sensor_name: robotiq_ft_sensor
+    state_interface_names:
+      - force.x
+      - force.y
+      - force.z
+      - torque.x
+      - torque.y
+      - torque.z
+    frame_id: robotiq_ft_frame_id
+
+
 joint_trajectory_controller:
   ros__parameters:
     joints:
@@ -27,6 +44,7 @@ joint_trajectory_controller:
     state_interfaces:
       - position
       - velocity
+
 
 elastoplastic_controller:
   ros__parameters:

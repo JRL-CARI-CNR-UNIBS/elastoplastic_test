@@ -42,11 +42,19 @@ def generate_launch_description():
                "--controller-manager","/controller_manager"],
   )
 
+  robotiq_force_torque_sensor_broadcaster_spawner = Node(
+    package="controller_manager",
+    executable="spawner",
+    arguments=["robotiq_force_torque_sensor_broadcaster",
+               "--controller-manager","/controller_manager"],
+  )
+
   return LaunchDescription([
     controller_manager_node,
     TimerAction(
       period=2.0,
-      actions=[joint_state_broadcaster_spawner]
+      actions=[joint_state_broadcaster_spawner,
+               robotiq_force_torque_sensor_broadcaster_spawner],
     ),
     RegisterEventHandler(
       OnExecutionComplete(
@@ -59,5 +67,5 @@ def generate_launch_description():
         target_action=[elastoplastic_controller_spawner],
         on_completion=[joint_trajectory_controller_spawner],
       )
-    )
+    ),
   ])
