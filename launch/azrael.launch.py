@@ -10,7 +10,7 @@ def generate_launch_description():
   
   return LaunchDescription([OpaqueFunction(function=launch_setup)])
 
-def launch_setup():
+def launch_setup(context):
 
   azrael_moveit = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(
