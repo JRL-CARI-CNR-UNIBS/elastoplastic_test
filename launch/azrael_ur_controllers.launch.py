@@ -16,8 +16,8 @@ def generate_launch_description():
     package="controller_manager",
     executable="ros2_control_node",
     parameters=[ros2_control_config_path],
-    # prefix="gnome-terminal -- cgdb -ex run --args",
     output="screen",
+    # prefix = ["gnome-terminal -- cgdb -q -ex 'set breakpoint pending on' -ex 'b elastoplastic_lugre_controller.cpp:update_and_write_commands' -ex run --args"],
     remappings=[("/controller_manager/robot_description","/robot_description")],
   )
 

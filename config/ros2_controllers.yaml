@@ -17,15 +17,8 @@ controller_manager:
 
 robotiq_force_torque_sensor_broadcaster:
   ros__parameters:
-    sensor_name: robotiq_ft_sensor
-    state_interface_names:
-      - force.x
-      - force.y
-      - force.z
-      - torque.x
-      - torque.y
-      - torque.z
-    frame_id: robotiq_ft_frame_id
+    sensor_name: az_robotiq_ft_sensor
+    frame_id: az_robotiq_ft_frame_id
 
 
 joint_trajectory_controller:
@@ -37,9 +30,18 @@ joint_trajectory_controller:
       - az_wrist_1_joint
       - az_wrist_2_joint
       - az_wrist_3_joint
-    
+
+    command_joints:
+      - elastoplastic_controller/az_shoulder_pan_joint
+      - elastoplastic_controller/az_shoulder_lift_joint
+      - elastoplastic_controller/az_elbow_joint
+      - elastoplastic_controller/az_wrist_1_joint
+      - elastoplastic_controller/az_wrist_2_joint
+      - elastoplastic_controller/az_wrist_3_joint
+
     command_interfaces:
       - position
+      - velocity
 
     state_interfaces:
       - position
@@ -49,11 +51,11 @@ joint_trajectory_controller:
 elastoplastic_controller:
   ros__parameters:
     target_joint_trajectory_topic: "/joints_target"
-    ft_sensor_name: "ft_sensor"
+    ft_sensor_name: az_robotiq_ft_sensor
     frames:
-      base: "base_link"
-      tool: "tool0"
-      sensor: "sensor"
+      base: az_base_footprint
+      tool: az_tool0
+      sensor: az_robotiq_ft_frame_id
     joints:
       - az_shoulder_pan_joint
       - az_shoulder_lift_joint
@@ -75,12 +77,16 @@ elastoplastic_controller:
     impedance:
       inertia: [10.0, 10.0, 10.0]
       lugre:
-        sigma_0: 1000.0
+        sigma_0: 100.0
         sigma_1: 10.0
-        sigma_2: 10.0
+        sigma_2: 50.0
         z_ss: 0.5
         z_ba: 0.1
       tau_w: 0.02
       reset_condition:
         reset_window_size: 1000
         reset_threshold: 0.1
+    clik:
+      kp: 10.0
+      kd: 50.0
+    debug: true
