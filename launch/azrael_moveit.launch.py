@@ -19,7 +19,7 @@ def generate_launch_description():
 
 def launch_setup(context):
 
-  robot_description_path = PathJoinSubstitution([FindPackageShare("azrael_description"), "urdf", "system.urdf.xacro"]).perform(context)
+  robot_description_path = PathJoinSubstitution([FindPackageShare("elastoplastic_test"), "urdf", "system.urdf.xacro"]).perform(context)
   robot_description_args = {
     "robot_ip" : LaunchConfiguration("robot_ip"),
     "use_fake_hardware" : LaunchConfiguration("use_fake_hardware"),

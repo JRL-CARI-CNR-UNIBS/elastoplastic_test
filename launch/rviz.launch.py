@@ -16,4 +16,4 @@ def generate_launch_description():
       arguments=["-d", rviz_config],
   )
 
-  return LaunchDescription(rviz_node)
+  return LaunchDescription([rviz_node])

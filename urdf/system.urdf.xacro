@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+
+<robot name="azrael" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:arg name="ft_sensor_ros2_control" default="false"/>
+  <xacro:arg name="gripper_ros2_control" default="false"/>
+
+  <xacro:include filename="$(find azrael_description)/urdf/system.urdf.xacro"/>
+
+  <link name="$(arg prefix)tcp" />
+  <joint name="$(arg prefix)tcpjoint" type="fixed">
+    <parent link="$(arg prefix)tool0"/>
+    <child link="$(arg prefix)tcp"/>
+    <origin xyz="0.0 0.00 0.34" rpy=" 0 0 -${M_PI/2}"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <xacro:include filename="$(find robotiq_ft_sensor_description)/urdf/robotiq_ft300s.urdf.xacro"/>
+  <!-- <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_140_macro.urdf.xacro"/> -->
+
+  <xacro:robotiq_ft300s parent="tool0" tf_prefix="$(arg prefix)">
+    <origin xyz="0 0 ${-6.5/1000}" rpy="0 0 0"/>
+  </xacro:robotiq_ft300s>
+
+  <!-- <xacro:robotiq_gripper name="azrael_gripper" prefix="$(arg prefix)" parent="$(arg prefix)robotiq_ft_frame_id" include_ros2_control="false">
+    <origin xyz="0 0 -0.00695" rpy="0 0 ${pi/2}"/>
+  </xacro:robotiq_gripper> -->
+
+  <xacro:include filename="tools.ros2_control.xacro"/>
+  <xacro:tools_ros2_control prefix="$(arg prefix)" ft_sensor="$(arg ft_sensor_ros2_control)" gripper="$(arg gripper_ros2_control)" ft_sensor_fake="$(arg use_fake_hardware)"/>
+
+<!--  <link name="azrael_x_axis"/>
+  <link name="azrael_y_axis"/>
+  <link name="azrael_rz_axis"/>
+  <joint name="map_to_x" type="prismatic">
+    <parent link="map"/>
+    <child link="azrael_x_axis"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+  <joint name="x_to_y" type="prismatic">
+    <parent link="azrael_x_axis"/>
+    <child link="azrael_y_axis"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+  <joint name="y_to_rz" type="revolute">
+    <parent link="azrael_y_axis"/>
+    <child link="azrael_rz_axis"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+  <joint name="rz_to_base" type="fixed">
+    <parent link="azrael_rz_axis"/>
+    <child link="$(arg prefix)base_footprint"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+
+  <xacro:if value="$(arg use_fake_hardware)">
+    <ros2_control name="azrael_ros2_control" type="system">
+      <hardware>
+        <plugin>mock_components/GenericSystem</plugin>
+      </hardware>
+      <joint name="map_to_x">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position">
+          <param initial_value="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="x_to_y">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position">
+          <param initial_value="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="y_to_rz">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position">
+          <param initial_value="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+    </ros2_control>
+  </xacro:if>
+  -->
+
+</robot>

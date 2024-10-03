@@ -70,8 +70,8 @@ elastoplastic_controller:
       - position
       - velocity
     floating_base:
-      enabled: false
-      input_target_topic: "/reference_cmd_vel"
+      enabled: true
+      input_target_topic: "/target_cmd_vel"
       odom: "/odom"
     wrench_deadband: [1.0,0.0]
     impedance:
@@ -87,6 +87,6 @@ elastoplastic_controller:
         reset_window_size: 1000
         reset_threshold: 0.1
     clik:
-      kp: 10.0
-      kd: 50.0
+      kp: 0.001
+      kd: 0.01
     debug: true
