@@ -17,7 +17,7 @@ def generate_launch_description():
     executable="ros2_control_node",
     parameters=[ros2_control_config_path],
     output="screen",
-    #prefix = ["gnome-terminal -- cgdb -q -ex 'set breakpoint pending on' -ex 'b elastoplastic_lugre_controller.cpp:update_and_write_commands' -ex run --args"],
+    #prefix = ["gnome-terminal -- cgdb -- -q -ex 'set breakpoint pending on' -ex 'b elastoplastic_lugre_controller.cpp:update_and_write_commands' -ex run --args"],
     remappings=[("/controller_manager/robot_description","/robot_description")],
   )
 
@@ -62,10 +62,10 @@ def generate_launch_description():
         on_completion=[elastoplastic_controller_spawner],
       )
     ),
-    RegisterEventHandler(
-      OnExecutionComplete(
-        target_action=elastoplastic_controller_spawner,
-        on_completion=[joint_trajectory_controller_spawner],
-      )
-    ),
+    # RegisterEventHandler(
+    #   OnExecutionComplete(
+    #     target_action=elastoplastic_controller_spawner,
+    #     on_completion=[joint_trajectory_controller_spawner],
+    #   )
+    # ),
   ])

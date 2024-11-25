@@ -50,6 +50,7 @@ joint_trajectory_controller:
 
 elastoplastic_controller:
   ros__parameters:
+    dt: 0.01 # <------------------------------ !!
     target_joint_trajectory_topic: "/joints_target"
     ft_sensor_name: az_robotiq_ft_sensor
     frames:
@@ -73,20 +74,34 @@ elastoplastic_controller:
       enabled: true
       input_target_topic: "/target_cmd_vel"
       odom: "/odom"
+      max_vel:
+        linear: [10.0, 10.0]
+        angular: 1.0
     wrench_deadband: [1.0,0.0]
     impedance:
       inertia: [10.0, 10.0, 10.0]
       lugre:
         sigma_0: 100.0
-        sigma_1: 10.0
-        sigma_2: 50.0
+        sigma_1: 20.0
+        sigma_2: 10.0
         z_ss: 0.5
         z_ba: 0.1
       tau_w: 0.02
       reset_condition:
-        reset_window_size: 1000
+        reset_window_size: 2000
         reset_threshold: 0.1
     clik:
-      kp: 0.001
-      kd: 0.01
+      kp: 10.0
+      kv: 100.0
+      task:
+        alpha_gain: 100.0
+        #weights: [100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        #weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        #weights: [0.1, 0.1, 0.1, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
+        weights: [0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        priorities: [1e-3, 1e-3]
+        last:
+          priority: 1e-3
+          kp: 10.0
+          kv: 100.0
     debug: true

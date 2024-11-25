@@ -3,6 +3,7 @@
 import rclpy
 from rclpy.node import Node
 
+import rclpy.qos
 from tf2_ros.static_transform_broadcaster import StaticTransformBroadcaster
 from geometry_msgs.msg import TransformStamped, Twist, TwistWithCovariance, Pose, PoseWithCovariance
 from std_msgs.msg import Header
@@ -12,7 +13,7 @@ import math
 
 class FakeBaseNode(Node):
   def __init__(self):
-    self.__TIMER_RATE = 0.1
+    self.__TIMER_RATE = 0.001
     self.__CMD_VEL_TOPIC = "/elastoplastic_controller/cmd_vel"
     self.__ODOM_TOPIC = "/odom"
 
@@ -83,6 +84,7 @@ class FakeBaseNode(Node):
 def main():
   rclpy.init()
   fake_base_node = FakeBaseNode()
+  fake_base_node.get_logger().info(f"Starting fake base");
   rclpy.spin(fake_base_node)
   rclpy.shutdown()
 
