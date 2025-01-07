@@ -13,13 +13,13 @@ def generate_launch_description():
 
 def launch_setup(context):
 
-  launch_moveit_path = PathJoinSubstitution([FindPackageShare('elastoplastic_test'), 'launch', 'azrael_moveit.launch.py'])
+  launch_moveit_path = PathJoinSubstitution([FindPackageShare('elastoplastic_test'), 'launch', 'demo_moveit.launch.py'])
   launch_moveit_and_robot_description = IncludeLaunchDescription(
     launch_description_source=PythonLaunchDescriptionSource(launch_moveit_path),
     launch_arguments=[('robot_ip', '0.0.0.0'), ('use_fake_hardware','true'), ('ft_sensor_ros2_control','true')]
   )
 
-  launch_controllers_path = PathJoinSubstitution([FindPackageShare('elastoplastic_test'), 'launch', 'azrael_ur_controllers.launch.py'])
+  launch_controllers_path = PathJoinSubstitution([FindPackageShare('elastoplastic_test'), 'launch', 'demo_ur_controllers.launch.py'])
   launch_controllers = IncludeLaunchDescription(
     launch_description_source=PythonLaunchDescriptionSource(launch_controllers_path),
   )

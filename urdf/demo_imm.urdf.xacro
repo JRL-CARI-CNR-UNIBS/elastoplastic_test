@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<robot name="demo_imm" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gz="http://gazebosim.org/schema">
+  <xacro:arg name="package_name" default="elastoplastic_test"/>
+  <xacro:property name="package_name" value="$(arg package_name)"/>
+  <xacro:arg name="prefix" default="demo/"/>
+  <xacro:property name="prefix" value="$(arg prefix)"/>
+  <xacro:arg name="initial_positions_file" default="$(find ${package_name})/config/initial_positions.yaml"/>
+  <xacro:arg name="ros2_control_param_file" default="$(find ${package_name})/config/ros2_controllers.yaml"/>
+  <xacro:include filename="$(find ${package_name})/urdf/demo_imm.xacro"/>
+  <xacro:demo_imm package="$(arg package_name)" prefix="$(arg prefix)" initial_positions_file="$(arg initial_positions_file)" ros2_control_param_file="$(arg ros2_control_param_file)" gz="false">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:demo_imm>
+
+  <!-- FT sensor -->
+  <xacro:include filename="$(find robotiq_ft_sensor_description)/urdf/robotiq_ft300s.urdf.xacro"/>
+  <xacro:robotiq_ft300s parent="tool0" tf_prefix="$(arg prefix)">
+    <origin xyz="0 0 -0.005" rpy="0 0 ${-1.5707963267948966}"/>
+  </xacro:robotiq_ft300s>
+  <xacro:include filename="$(find robotiq_ft_sensor_description)/urdf/robotiq_fts.ros2_control.xacro"/>
+  <xacro:robotiq_fts_ros2_control name="${prefix[0:-1] + '_'}" use_fake_mode="true" tf_prefix="$(arg prefix)" />
+
+  <!-- simple gripper -->
+  <xacro:include filename="$(find ${package_name})/urdf/simple_gripper.xacro" />
+  <xacro:simple_gripper prefix="$(arg prefix)gripper/" parent="$(arg prefix)robotiq_ft_frame_id" gz="false">
+    <origin xyz="0 0 -0.005"/>
+  </xacro:simple_gripper>
+</robot>

@@ -15,7 +15,7 @@ class ExampleTrj(rclpy.node.Node):
 
     self.buffer = Buffer()
     self.listener = TransformListener(self.buffer, self, spin_thread=True)
-    self.base_tf = 'base_link'
+    self.base_tf = 'base_footprint'
     self.cmd_vel_pub = self.create_publisher(geometry_msgs.msg.Twist, '/target_cmd_vel', 10)
     self.t = 0.0
     self.dt = 0.01
@@ -26,7 +26,7 @@ class ExampleTrj(rclpy.node.Node):
     #   self.get_clock().sleep_for(rclpy.duration.Duration(nanoseconds=1e8))
     v_amp = 0.2
     twist_msg = geometry_msgs.msg.Twist()
-    twist_msg.linear.x = v_amp * sin(2 * PI * 0.2 * self.t) # Lateral
+    twist_msg.linear.x = v_amp * sin(2 * PI * 0.5 * self.t) # Lateral
     self.t = self.t + self.dt
     #twist_msg.linear.y = v_amp # Forward
     #twist_msg.angular.z = v_amp

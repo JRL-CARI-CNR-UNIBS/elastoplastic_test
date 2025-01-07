@@ -7,37 +7,37 @@ from launch.actions import OpaqueFunction, TimerAction
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
-  
+
   return LaunchDescription([OpaqueFunction(function=launch_setup)])
 
 def launch_setup(context):
 
-  azrael_moveit = IncludeLaunchDescription(
+  demo_moveit = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([
-      PathJoinSubstitution([FindPackageShare("elastoplastic_test"),"launch","azrael_moveit.launch.py"])
+      PathJoinSubstitution([FindPackageShare("elastoplastic_test"),"launch","demo_moveit.launch.py"])
     ]),
     launch_arguments={
       "robot_ip" : "192.168.254.31"
     }.items()
   )
 
-  azrael_ur_controllers = IncludeLaunchDescription(
+  demo_ur_controllers = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([
-      PathJoinSubstitution([FindPackageShare("elastoplastic_test"),"launch","azrael_ur_controllers.launch.py"])
+      PathJoinSubstitution([FindPackageShare("elastoplastic_test"),"launch","demo_ur_controllers.launch.py"])
     ])
   )
 
-  azrael_mobile_base = IncludeLaunchDescription(
+  demo_mobile_base = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([
-      PathJoinSubstitution([FindPackageShare("elastoplastic_test"),"launch","azrael_mobile_base.launch.py"])
+      PathJoinSubstitution([FindPackageShare("elastoplastic_test"),"launch","demo_mobile_base.launch.py"])
     ])
   )
 
   return [
-    azrael_moveit,
-    # azrael_mobile_base,
+    demo_moveit,
+    # demo_mobile_base,
     TimerAction(
       period=3.0,
-      actions=[azrael_ur_controllers],
+      actions=[demo_ur_controllers],
     )
   ]

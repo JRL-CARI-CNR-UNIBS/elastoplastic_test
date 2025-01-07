@@ -1,0 +1,140 @@
+<?xml version="1.0" ?>
+<robot name="gripper" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="simple_gripper" params="prefix parent *origin gz:=false">
+    <link name="${prefix}base">
+      <visual>
+        <geometry>
+          <box size="0.05 0.1 0.1"/>
+        </geometry>
+        <origin xyz="0 0 0.05"/>
+        <material name="violet">
+          <color rgba="0.4 0.18 0.57 1.0" />
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.05 0.1 0.1"/>
+        </geometry>
+        <origin xyz="0 0 0.05"/>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0.05"/>
+        <mass value="5"/>
+        <inertia ixx="0.83333299999999994" ixy="0.0" ixz="0.0" iyy="0.52083300000000001" iyz="0.0" izz="0.52083300000000001"/>
+      </inertial>
+    </link>
+    <link name="${prefix}finger_right">
+      <visual>
+        <geometry>
+          <box size="0.04 0.01 0.1"/>
+        </geometry>
+        <origin xyz="0 0.0 0.05"/>
+        <material name="grey">
+          <color rgba="0.2 0.2 0.2 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.04 0.01 0.1"/>
+        </geometry>
+        <origin xyz="0 0.0 0.05"/>
+      </collision>
+      <inertial>
+        <origin xyz="0 0.005 0.05"/>
+        <mass value="0.4"/>
+        <inertia ixx="0.033666700000000001" ixy="0.0" ixz="0.0" iyy="0.038666700000000001" iyz="0.0" izz="0.0056666700000000003"/>
+      </inertial>
+    </link>
+    <link name="${prefix}finger_left">
+      <visual>
+        <geometry>
+          <box size="0.04 0.01 0.1"/>
+        </geometry>
+        <origin xyz="0 0 0.05"/>
+        <material name="grey">
+          <color rgba="0.2 0.2 0.2 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.04 0.01 0.1"/>
+        </geometry>
+        <origin xyz="0 0.0 0.05"/>
+      </collision>
+      <inertial>
+        <origin xyz="0 0.005 0.05"/>
+        <mass value="0.4"/>
+        <inertia ixx="0.033666700000000001" ixy="0.0" ixz="0.0" iyy="0.038666700000000001" iyz="0.0" izz="0.0056666700000000003"/>
+      </inertial>
+    </link>
+    <joint name="${prefix}right_finger_joint" type="prismatic">
+      <axis xyz="0 1 0"/>
+      <origin xyz="0.0 -0.045 0.1" rpy="0.0 0.0 0.0"/>
+      <parent link="${prefix}base"/>
+      <child link="${prefix}finger_right"/>
+      <limit effort="1000.0" lower="0" upper="0.038" velocity="1"/>
+    </joint>
+    <joint name="${prefix}left_finger_joint" type="prismatic">
+      <mimic joint="${prefix}right_finger_joint"/>
+      <axis xyz="0 1 0"/>
+      <origin xyz="0.0 0.045 0.1" rpy="0.0 0.0 3.1415926535"/>
+      <parent link="${prefix}base"/>
+      <child link="${prefix}finger_left"/>
+      <limit effort="1000.0" lower="0" upper="0.038" velocity="1"/>
+    </joint>
+
+    <link name="${prefix}tcp"/>
+    <joint name="${prefix}attach_tcp" type="fixed">
+      <parent link="${prefix}base"/>
+      <child link="${prefix}tcp"/>
+      <origin xyz="0 0 0.15"/>
+    </joint>
+
+    <joint name="${prefix}attach_to_parent" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${prefix}base"/>
+      <xacro:insert_block name="origin"/>
+    </joint>
+
+    <gazebo reference="${prefix}attach_to_parent">
+      <preserveFixedJoint>true</preserveFixedJoint>
+      <sensor name="force_torque_sensor" type="force_torque">
+        <always_on>true</always_on>
+        <update_rate>50</update_rate>
+        <visualize>true</visualize>
+        <topic>${prefix}force_torque</topic>
+        <force_torque>
+          <frame>sensor</frame>
+          <measure_direction>parent_to_child</measure_direction>
+        </force_torque>
+      </sensor>
+    </gazebo>
+
+    <ros2_control name="GazeboSystem" type="system">
+      <xacro:if value="${gz}">
+        <hardware>
+          <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        </hardware>
+      </xacro:if>
+      <xacro:unless value="${gz}">
+        <hardware>
+          <plugin>mock_components/GenericSystem</plugin>
+        </hardware>
+      </xacro:unless>
+      <joint name="${prefix}right_finger_joint">
+        <command_interface name="effort"/>
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="${prefix}left_finger_joint">
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+    </ros2_control>
+  </xacro:macro>
+</robot>

@@ -4,8 +4,8 @@ import rclpy
 from rclpy.node import Node
 
 import rclpy.qos
-from tf2_ros.static_transform_broadcaster import StaticTransformBroadcaster
-from geometry_msgs.msg import TransformStamped, Twist, TwistWithCovariance, Pose, PoseWithCovariance
+from tf2_ros.transform_broadcaster import TransformBroadcaster
+from geometry_msgs.msg import TransformStamped, Twist
 from std_msgs.msg import Header
 from nav_msgs.msg import Odometry
 
@@ -18,7 +18,11 @@ class FakeBaseNode(Node):
     self.__ODOM_TOPIC = "/odom"
 
     super().__init__('fake_base_node')
-    self.tf_pose_bcast = StaticTransformBroadcaster(self)
+    self.tf_pose_bcast = TransformBroadcaster(self, rclpy.qos.QoSProfile(
+      durability=rclpy.qos.DurabilityPolicy.TRANSIENT_LOCAL,
+      history=rclpy.qos.HistoryPolicy.KEEP_LAST,
+      depth=10
+    ))
 
     self.cmd_vel_sub = self.create_subscription(Twist, self.__CMD_VEL_TOPIC, self.update_state, 10)
     self.odom_pub = self.create_publisher(Odometry, self.__ODOM_TOPIC, 10)
@@ -62,13 +66,26 @@ class FakeBaseNode(Node):
     odom.pose.pose.orientation.z = math.sin(self.rz/2.0)
     header = Header()
     header.frame_id = 'odom'
-    header.stamp.sec = self.get_clock().now().seconds_nanoseconds()[0]
-    header.stamp.nanosec = self.get_clock().now().seconds_nanoseconds()[1]
+    header.stamp = self.get_clock().now().to_msg()
     odom.header = header
 
     transform_stamped: TransformStamped = TransformStamped()
+    transform_stamped.header.stamp = self.get_clock().now().to_msg()
+    transform_stamped.header.frame_id = 'map'
+    transform_stamped.child_frame_id = 'odom'
+    transform_stamped.transform.translation.x = 0.0
+    transform_stamped.transform.translation.y = 0.0
+    transform_stamped.transform.translation.z = 0.0
+    transform_stamped.transform.rotation.x = 0.0
+    transform_stamped.transform.rotation.y = 0.0
+    transform_stamped.transform.rotation.z = 0.0
+    transform_stamped.transform.rotation.w = 1.0
+    self.tf_pose_bcast.sendTransform(transform_stamped)
+
+    transform_stamped = TransformStamped()
+    transform_stamped.header.stamp = self.get_clock().now().to_msg()
     transform_stamped.header.frame_id = 'odom'
-    transform_stamped.child_frame_id = 'az_base_footprint'
+    transform_stamped.child_frame_id = 'demo/base_footprint'
     transform_stamped.transform.translation.x = self.x
     transform_stamped.transform.translation.y = self.y
     transform_stamped.transform.translation.z = 0.0

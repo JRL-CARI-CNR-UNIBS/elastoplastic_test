@@ -18,30 +18,30 @@ class WrenchPublisherNode(Node):
         super().__init__('wrench_publisher_node')
         # Create a publisher for WrenchStamped messages
         self.publisher_ = self.create_publisher(WrenchStamped, '/io_and_status_controller/fake_wrench', 10)
-        
+
         self.spin_node = Node('__spin_node__')
 
         # Create a tf2 buffer and listener
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self.spin_node, spin_thread=True)
-        
+
         self.get_logger().info('WrenchPublisherNode has been started.')
 
     def transform_force_to_tool(self, force_x, force_y, force_z):
         try:
             # Look up the transform from 'base_link' to 'tool'
-            transform = self.tf_buffer.lookup_transform('az_robotiq_ft_frame_id', 'map', rclpy.time.Time())
+            transform = self.tf_buffer.lookup_transform('demo/robotiq_ft_frame_id', 'map', rclpy.time.Time())
             # Extract rotation (quaternion) and translation from the transform
             q = transform.transform.rotation
             translation = transform.transform.translation
-            
+
             # Convert quaternion to rotation matrix
             rotation_matrix = self.quaternion_to_rotation_matrix(q)
 
             # Apply the transformation
             force_base = np.array([force_x, force_y, force_z])
             force_tool = np.dot(rotation_matrix, force_base)
-            
+
             return force_tool[0], force_tool[1], force_tool[2]
         except (LookupException, ConnectivityException, ExtrapolationException) as e:
             self.get_logger().error(f"Could not transform force: {e}")
@@ -60,7 +60,7 @@ class WrenchPublisherNode(Node):
     def publish_wrench(self, force_x=0.0, force_y=0.0, force_z=0.0):
         # Transform force to 'tool' frame
         force_x, force_y, force_z = self.transform_force_to_tool(force_x, force_y, force_z)
-        
+
         # Create and populate the WrenchStamped message
         msg = WrenchStamped()
         msg.header.stamp = self.get_clock().now().to_msg()
@@ -133,7 +133,7 @@ class WrenchPublisherGUI:
         self.slider = ttk.Scale(
             slider_frame,
             from_=0,
-            to=20,
+            to=30,
             orient='horizontal',
             command=lambda val: self.update_slider_label(val)
         )

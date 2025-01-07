@@ -3,6 +3,8 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
+# IMPORTANT: Unusable
+
 def generate_launch_description():
 
     azrael_driver_udp = Node(
@@ -69,4 +71,3 @@ def generate_launch_description():
     ]
 
     return LaunchDescription(nodes_to_start)
-

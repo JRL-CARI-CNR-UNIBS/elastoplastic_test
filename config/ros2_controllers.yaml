@@ -1,7 +1,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 100  # Hz
-    
+
     joint_trajectory_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
@@ -17,27 +17,27 @@ controller_manager:
 
 robotiq_force_torque_sensor_broadcaster:
   ros__parameters:
-    sensor_name: az_robotiq_ft_sensor
-    frame_id: az_robotiq_ft_frame_id
+    sensor_name: demo/robotiq_ft_sensor
+    frame_id: demo/robotiq_ft_frame_id
 
 
 joint_trajectory_controller:
   ros__parameters:
     joints:
-      - az_shoulder_pan_joint
-      - az_shoulder_lift_joint
-      - az_elbow_joint
-      - az_wrist_1_joint
-      - az_wrist_2_joint
-      - az_wrist_3_joint
+      - demo/shoulder_pan_joint
+      - demo/shoulder_lift_joint
+      - demo/elbow_joint
+      - demo/wrist_1_joint
+      - demo/wrist_2_joint
+      - demo/wrist_3_joint
 
     command_joints:
-      - elastoplastic_controller/az_shoulder_pan_joint
-      - elastoplastic_controller/az_shoulder_lift_joint
-      - elastoplastic_controller/az_elbow_joint
-      - elastoplastic_controller/az_wrist_1_joint
-      - elastoplastic_controller/az_wrist_2_joint
-      - elastoplastic_controller/az_wrist_3_joint
+      - elastoplastic_controller/demo/shoulder_pan_joint
+      - elastoplastic_controller/demo/shoulder_lift_joint
+      - elastoplastic_controller/demo/elbow_joint
+      - elastoplastic_controller/demo/wrist_1_joint
+      - elastoplastic_controller/demo/wrist_2_joint
+      - elastoplastic_controller/demo/wrist_3_joint
 
     command_interfaces:
       - position
@@ -52,18 +52,18 @@ elastoplastic_controller:
   ros__parameters:
     dt: 0.01 # <------------------------------ !!
     target_joint_trajectory_topic: "/joints_target"
-    ft_sensor_name: az_robotiq_ft_sensor
+    ft_sensor_name: demo/robotiq_ft_sensor
     frames:
-      base: az_base_footprint
-      tool: az_tool0
-      sensor: az_robotiq_ft_frame_id
+      base: demo/base_footprint
+      tool: demo/gripper/tcp
+      sensor: demo/robotiq_ft_frame_id
     joints:
-      - az_shoulder_pan_joint
-      - az_shoulder_lift_joint
-      - az_elbow_joint
-      - az_wrist_1_joint
-      - az_wrist_2_joint
-      - az_wrist_3_joint
+      - demo/shoulder_pan_joint
+      - demo/shoulder_lift_joint
+      - demo/elbow_joint
+      - demo/wrist_1_joint
+      - demo/wrist_2_joint
+      - demo/wrist_3_joint
     command_interfaces:
       - position
       - velocity
@@ -79,22 +79,22 @@ elastoplastic_controller:
         angular: 1.0
     wrench_deadband: [1.0,0.0]
     impedance:
-      inertia: [10.0, 10.0, 10.0]
+      inertia: [1.0, 1.0, 1.0]
       lugre:
         sigma_0: 100.0
-        sigma_1: 20.0
+        sigma_1: 10.0
         sigma_2: 10.0
         z_ss: 0.5
-        z_ba: 0.1
+        z_ba: 0.2
       tau_w: 0.02
       reset_condition:
         reset_window_size: 2000
-        reset_threshold: 0.1
+        reset_threshold: 0.01
     clik:
       kp: 10.0
       kv: 100.0
       task:
-        alpha_gain: 100.0
+        alpha_gain: 50.0
         #weights: [100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         #weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         #weights: [0.1, 0.1, 0.1, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
