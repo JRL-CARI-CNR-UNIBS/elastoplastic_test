@@ -43,22 +43,22 @@ def launch_setup(context):
     .to_moveit_configs()
   )
 
-  move_group_node = Node(
-    package="moveit_ros_move_group",
-    executable="move_group",
-    output="screen",
-    parameters=[moveit_config.to_dict()],
-  )
+  # move_group_node = Node(
+  #   package="moveit_ros_move_group",
+  #   executable="move_group",
+  #   output="screen",
+  #   parameters=[moveit_config.to_dict()],
+  # )
 
   robot_state_publisher_node = Node(
     package="robot_state_publisher",
     executable="robot_state_publisher",
-    output="screen",
+    output="log",
     # condition=IfCondition(LaunchConfiguration("use_fake_hardware")),
     parameters=[moveit_config.robot_description]
   )
 
   return [
-    move_group_node,
+    #move_group_node,
     robot_state_publisher_node,
   ]

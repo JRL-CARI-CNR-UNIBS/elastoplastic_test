@@ -7,7 +7,6 @@ from launch.event_handlers import OnExecutionComplete
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
-
 def generate_launch_description():
 
   ros2_control_config_path = PathJoinSubstitution([FindPackageShare("elastoplastic_test"), "config", "ros2_controllers.yaml"])
@@ -18,6 +17,7 @@ def generate_launch_description():
     parameters=[ros2_control_config_path],
     output="screen",
     #prefix = ["gnome-terminal -- cgdb -- -q -ex 'set breakpoint pending on' -ex 'b elastoplastic_lugre_controller.cpp:update_and_write_commands' -ex run --args"],
+    #prefix=['gdbserver localhost:3000'],
     remappings=[("/controller_manager/robot_description","/robot_description")],
   )
 
@@ -31,7 +31,7 @@ def generate_launch_description():
   joint_trajectory_controller_spawner = Node(
     package="controller_manager",
     executable="spawner",
-    arguments=["joint_trajectory_controller", 
+    arguments=["joint_trajectory_controller",
                "--controller-manager", "/controller_manager"],
   )
 
@@ -62,10 +62,10 @@ def generate_launch_description():
         on_completion=[elastoplastic_controller_spawner],
       )
     ),
-    # RegisterEventHandler(
-    #   OnExecutionComplete(
-    #     target_action=elastoplastic_controller_spawner,
-    #     on_completion=[joint_trajectory_controller_spawner],
-    #   )
-    # ),
+    #RegisterEventHandler(
+    #  OnExecutionComplete(
+    #    target_action=elastoplastic_controller_spawner,
+    #    on_completion=[joint_trajectory_controller_spawner],
+    #  )
+    #),
   ])
